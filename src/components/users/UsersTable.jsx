@@ -1,25 +1,33 @@
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/table";
 import { Avatar } from "@nextui-org/react";
 
-export const UsersTable = ({ users }) => {
+import { TABLE_KEYS } from "../../const";
+
+export const UsersTable = ({ users, sortDescriptor, onSortChange }) => {
+
   return (
-    <Table aria-label="User Table">
+    <Table
+      isStriped
+      aria-label="User Table"
+      sortDescriptor={sortDescriptor}
+      onSortChange={onSortChange}
+    >
       <TableHeader>
-        <TableColumn>Nombre</TableColumn>
-        <TableColumn>Apellido</TableColumn>
-        <TableColumn>Email</TableColumn>
+        <TableColumn key={TABLE_KEYS.FIRST_NAME} allowsSorting>Nombre</TableColumn>
+        <TableColumn key={TABLE_KEYS.LAST_NAME} allowsSorting>Apellido</TableColumn>
+        <TableColumn key={TABLE_KEYS.EMAIL} allowsSorting>Email</TableColumn>
         <TableColumn>Género</TableColumn>
         <TableColumn>Role</TableColumn>
       </TableHeader>
       <TableBody>
         {
           users.map(user => (
-            <TableRow key={user.login.uuid}>
+            <TableRow key={user.id}>
               <TableCell className="flex items-center gap-3">
-                <Avatar isBordered src={user.picture.thumbnail} size="sm"/>
-                {`${user.name.title}. ${user.name.first}`}
+                <Avatar isBordered src={user.profileImage} size="sm"/>
+                {user.firstName}
               </TableCell>
-              <TableCell>{`${user.name.last}`}</TableCell>
+              <TableCell>{user.lastName}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell className="capitalize">{user.gender}</TableCell>
               <TableCell>{user.role}</TableCell>

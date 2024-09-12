@@ -16,8 +16,13 @@ export const getFetchedUsers = async (limit) => {
     const randomRole = rolesArray[randomIndex];
 
     return {
+      id: user.login.uuid,
       role: randomRole,
-      ...user
+      firstName: user.name.first,
+      lastName: user.name.last,
+      email: user.email,
+      gender: user.gender,
+      profileImage: user.picture.thumbnail,
     };
   });
 };
