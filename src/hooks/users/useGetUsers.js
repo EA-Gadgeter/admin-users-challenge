@@ -22,8 +22,8 @@ export const useGetUsers = () => {
           sessionStorage.setItem(SESSION_STORAGE_KEYS.USERS_LIST, JSON.stringify(data));
 
           setUsers(data);
-          setLoading(false);
-        });
+        })
+        .finally(() => setLoading(false));
 
       return;
     }

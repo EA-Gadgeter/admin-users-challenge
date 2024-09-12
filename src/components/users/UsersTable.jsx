@@ -1,10 +1,25 @@
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/table";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { Avatar } from "@nextui-org/react";
+import { Chip } from "@nextui-org/react";
 
-import { TABLE_KEYS } from "../../const";
+import { ShieldCheckIcon, PencilSquareIcon, UserIcon } from "@heroicons/react/24/solid";
 
-export const UsersTable = ({ users, sortDescriptor, onSortChange }) => {
+import { TABLE_KEYS, ROLES } from "../../const";
 
+
+const getChipPropsByRole = (role) => {
+  switch (role) {
+    case ROLES.ADMIN:
+      return { color: "warning", startContent: <ShieldCheckIcon className="size-3.5" /> };
+    case ROLES.EDITOR:
+      return { color: "secondary", startContent: <PencilSquareIcon className="size-3.5" /> };
+    case ROLES.VIEWER:
+      return { color: "primary", startContent: <UserIcon className="size-3.5" /> };
+  }
+};
+
+export const UsersTable = ({ users, sortDescriptor, onSortChange, isLoadingInfo }) => {
   return (
     <Table
       isStriped
@@ -19,7 +34,10 @@ export const UsersTable = ({ users, sortDescriptor, onSortChange }) => {
         <TableColumn>Género</TableColumn>
         <TableColumn>Role</TableColumn>
       </TableHeader>
-      <TableBody>
+      <TableBody
+        isLoading={isLoadingInfo}
+        loadingContent={<Spinner label="Loading..." />}
+      >
         {
           users.map(user => (
             <TableRow key={user.id}>
@@ -30,11 +48,15 @@ export const UsersTable = ({ users, sortDescriptor, onSortChange }) => {
               <TableCell>{user.lastName}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell className="capitalize">{user.gender}</TableCell>
-              <TableCell>{user.role}</TableCell>
+              <TableCell>
+                <Chip variant="bordered" size="sm" {...getChipPropsByRole(user.role)}>
+                  {user.role}
+                </Chip>
+              </TableCell>
             </TableRow>
           ))
         }
       </TableBody>
     </Table>
-  )
+  );
 };

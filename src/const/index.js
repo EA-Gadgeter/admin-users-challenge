@@ -6,7 +6,9 @@ export const ROLES =  {
 
 export const SESSION_STORAGE_KEYS = {
   USER: "user",
-  USERS_LIST: "userslist"
+  USERS_LIST: "userslist",
+  USERS_FILTERS: "userFilters",
+  USERS_SORTING: "userSorting"
 };
 
 export const TABLE_KEYS = {
