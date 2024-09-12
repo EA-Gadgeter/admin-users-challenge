@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 
-import { getUsers } from "../../services/users";
+import { getFetchedUsers } from "../../services/users";
 
-const LIMIT_USERS = 50;
+import { SESSION_STORAGE_KEYS } from "../../const";
+
+const LIMIT_USERS_FETCH = 50;
 
 export const useGetUsers = () => {
   const [users, setUsers] = useState([]);
@@ -10,11 +12,26 @@ export const useGetUsers = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getUsers(LIMIT_USERS)
-      .then(data => {
-        setUsers(data);
-        setLoading(false);
-      });
+    // Verificamos si hay usuarios en storage
+    const storagedUsers = sessionStorage.getItem(SESSION_STORAGE_KEYS.USERS_LIST);
+
+    // Si no hay nada hacemos el fetched y guardamos
+    if (!storagedUsers) {
+      getFetchedUsers(LIMIT_USERS_FETCH)
+        .then(data => {
+          sessionStorage.setItem(SESSION_STORAGE_KEYS.USERS_LIST, JSON.stringify(data));
+
+          setUsers(data);
+          setLoading(false);
+        });
+
+      return;
+    }
+
+    // Si hay users, parseamos y mostramos
+    const parsedUsers = JSON.parse(storagedUsers);
+    setUsers(parsedUsers);
+    setLoading(false);
   }, []);
 
   return { users, loading, error };

@@ -1,6 +1,6 @@
 import {ROLES} from "../../const";
 
-export const getUsers = async (limit) => {
+export const getFetchedUsers = async (limit) => {
   const res = await fetch(`https://randomuser.me/api/?results=${limit}`);
 
   if (!res.ok) {

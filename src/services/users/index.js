@@ -1,1 +1,1 @@
-export { getUsers } from "./getUsers.js";
+export { getFetchedUsers } from "./getFetchedUsers.js";
