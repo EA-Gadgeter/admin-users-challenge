@@ -1,16 +1,23 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useDarkModeStore = create((set) => ({
-  darkMode: false,
-  toggleDarkMode: () => set((state) => {
-    const { darkMode } = state;
+import { STORAGE_KEYS } from "../const";
 
-    if (darkMode) {
-      document.querySelector("body").classList.remove("dark");
-      return {darkMode: false};
-    }
+export const useDarkModeStore = create(persist(
+  (set) => ({
+    darkMode: false,
+    toggleDarkMode: (newValue) => set(() => {
+      if (!newValue) {
+        document.querySelector("body").classList.remove("dark");
+        return {darkMode: newValue};
+      }
 
-    document.querySelector("body").classList.add("dark");
-    return {darkMode: true};
+      document.querySelector("body").classList.add("dark");
+      return {darkMode: newValue};
+    }),
   }),
-}));
+
+  {
+    name: STORAGE_KEYS.DARK_MODE
+  }
+));

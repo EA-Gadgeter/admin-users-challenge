@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 
 import { createContext } from "react";
 
-import { SESSION_STORAGE_KEYS, ROLES } from "../const";
+import { STORAGE_KEYS, ROLES } from "../const";
 
 export const AuthContext = createContext();
 
@@ -18,14 +18,14 @@ export const AuthContextProvider = ({ children }) => {
       role: ROLES[role],
     };
 
-    sessionStorage.setItem(SESSION_STORAGE_KEYS.USER, JSON.stringify(newAuthInfo));
+    sessionStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(newAuthInfo));
 
     setAuthInfo(newAuthInfo);
     setIsAuth(true);
   };
 
   useEffect(() => {
-    const userInfo = sessionStorage.getItem(SESSION_STORAGE_KEYS.USER);
+    const userInfo = sessionStorage.getItem(STORAGE_KEYS.USER);
 
     if (!userInfo) return;
 

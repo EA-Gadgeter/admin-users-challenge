@@ -4,11 +4,12 @@ export const ROLES =  {
   VIEWER: "Viewer",
 };
 
-export const SESSION_STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   USER: "user",
-  USERS_LIST: "userslist",
+  USERS_LIST: "usersList",
   USERS_FILTERS: "userFilters",
-  USERS_SORTING: "userSorting"
+  USERS_SORTING: "userSorting",
+  DARK_MODE: "darkMode"
 };
 
 export const TABLE_KEYS = {

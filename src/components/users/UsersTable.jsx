@@ -2,8 +2,9 @@ import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from 
 import { Spinner } from "@nextui-org/react";
 import { Avatar } from "@nextui-org/react";
 import { Chip } from "@nextui-org/react";
+import { Tooltip } from "@nextui-org/react";
 
-import { ShieldCheckIcon, PencilSquareIcon, UserIcon } from "@heroicons/react/24/solid";
+import { ShieldCheckIcon, PencilSquareIcon, UserIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 import { TABLE_KEYS, ROLES } from "../../const";
 
@@ -19,9 +20,13 @@ const getChipPropsByRole = (role) => {
   }
 };
 
-export const UsersTable = ({ users, sortDescriptor, onSortChange, isLoadingInfo }) => {
+export const UsersTable = ({ users, sortDescriptor, onSortChange, isLoadingInfo, deleteUserFunc }) => {
   return (
     <Table
+      classNames={{
+        wrapper: "max-h-[800px]",
+      }}
+      isHeaderSticky
       isStriped
       aria-label="User Table"
       sortDescriptor={sortDescriptor}
@@ -33,28 +38,47 @@ export const UsersTable = ({ users, sortDescriptor, onSortChange, isLoadingInfo 
         <TableColumn key={TABLE_KEYS.EMAIL} allowsSorting>Email</TableColumn>
         <TableColumn>Género</TableColumn>
         <TableColumn>Role</TableColumn>
+        <TableColumn>{""}</TableColumn>
       </TableHeader>
       <TableBody
+        items={users}
         isLoading={isLoadingInfo}
         loadingContent={<Spinner label="Loading..." />}
+        emptyContent="Sin información que mostrar"
       >
         {
-          users.map(user => (
-            <TableRow key={user.id}>
+          (item) => (
+            <TableRow key={item.id}>
               <TableCell className="flex items-center gap-3">
-                <Avatar isBordered src={user.profileImage} size="sm"/>
-                {user.firstName}
+                <Avatar isBordered src={item.profileImage} size="sm"/>
+                {item.firstName}
               </TableCell>
-              <TableCell>{user.lastName}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell className="capitalize">{user.gender}</TableCell>
+              <TableCell>{item.lastName}</TableCell>
+              <TableCell>{item.email}</TableCell>
+              <TableCell className="capitalize">{item.gender}</TableCell>
               <TableCell>
-                <Chip variant="bordered" size="sm" {...getChipPropsByRole(user.role)}>
-                  {user.role}
+                <Chip variant="bordered" size="sm" {...getChipPropsByRole(item.role)}>
+                  {item.role}
                 </Chip>
               </TableCell>
+              <TableCell>
+                <div className="relative flex items-center gap-2">
+                  <Tooltip content="Detalles">
+                    <EyeIcon className="size-6 text-default-400 cursor-pointer active:opacity-50"/>
+                  </Tooltip>
+                  <Tooltip content="Editar usuario">
+                    <PencilSquareIcon className="size-6 text-default-400 cursor-pointer active:opacity-50"/>
+                  </Tooltip>
+                  <Tooltip color="danger" content="Borrar usuario">
+                    <TrashIcon
+                      className="size-6 text-danger cursor-pointer active:opacity-50"
+                      onClick={() => deleteUserFunc(item.id)}
+                    />
+                  </Tooltip>
+                </div>
+              </TableCell>
             </TableRow>
-          ))
+          )
         }
       </TableBody>
     </Table>

@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Switch } from "@nextui-org/react";
 
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
@@ -13,7 +15,7 @@ export const DarkModeSwitch = () => {
       isSelected={darkMode}
       size="lg"
       color="default"
-      onChange={toggleDarkMode}
+      onChange={() => toggleDarkMode(!darkMode)}
       thumbIcon={({isSelected, className}) =>
         isSelected ? (
           <SunIcon className={className}/>

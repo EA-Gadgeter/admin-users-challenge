@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 
-import { GENDERS, ROLES, SESSION_STORAGE_KEYS } from "../../const";
+import { GENDERS, ROLES, STORAGE_KEYS } from "../../const";
 
 export const useUserFilters = () => {
   const [filters, setFilters] = useState({
@@ -10,7 +10,7 @@ export const useUserFilters = () => {
   });
 
   useEffect(() => {
-    const userFilters = sessionStorage.getItem(SESSION_STORAGE_KEYS.USERS_FILTERS);
+    const userFilters = sessionStorage.getItem(STORAGE_KEYS.USERS_FILTERS);
 
     if (!userFilters) return;
 
@@ -20,7 +20,7 @@ export const useUserFilters = () => {
   const onFilterByText = (newText) => {
     const newFilters = {...filters, byText: newText};
     setFilters(newFilters);
-    sessionStorage.setItem(SESSION_STORAGE_KEYS.USERS_FILTERS, JSON.stringify(newFilters));
+    sessionStorage.setItem(STORAGE_KEYS.USERS_FILTERS, JSON.stringify(newFilters));
   };
 
   const onFilterByRole = (event) => {
@@ -28,7 +28,7 @@ export const useUserFilters = () => {
 
     const newFilters = {...filters, byRole: newRole};
     setFilters(newFilters);
-    sessionStorage.setItem(SESSION_STORAGE_KEYS.USERS_FILTERS, JSON.stringify(newFilters));
+    sessionStorage.setItem(STORAGE_KEYS.USERS_FILTERS, JSON.stringify(newFilters));
   };
 
   const onFilterByGender = (event) => {
@@ -36,7 +36,7 @@ export const useUserFilters = () => {
 
     const newFilters = {...filters, byGender: newGender};
     setFilters(newFilters);
-    sessionStorage.setItem(SESSION_STORAGE_KEYS.USERS_FILTERS, JSON.stringify(newFilters));
+    sessionStorage.setItem(STORAGE_KEYS.USERS_FILTERS, JSON.stringify(newFilters));
   };
 
   const filterByText = (usersToFilter) => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
 import { Pagination } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
@@ -16,7 +16,7 @@ import { ROLES, GENDERS } from "../const";
 import { UserIcon } from "@heroicons/react/24/solid/index.js";
 
 export function App() {
-  const { users, error, loading } = useGetUsers();
+  const { users, error, loading, deleteUser } = useGetUsers();
   const { filters,
     onFilterByText, filterByText,
     onFilterByRole, filterByRole,
@@ -30,22 +30,40 @@ export function App() {
     offset: 0,
   });
 
-  // Logica de ordenamiento
-  let sortedUsers = [...users];
-  if (sortDescriptor.column !== "") sortedUsers = sort(sortedUsers);
+  // Primero ordenamos
+  const sortedUsers = useMemo(() => {;
+    return sort([...users]);
+  }, [users, sortDescriptor]);
 
-  // Logica de de filtrado
-  let filteredUsers = [...sortedUsers];
-  if (filters.byText !== "") filteredUsers = filterByText(filteredUsers);
-  if (filters.byRole !== "") filteredUsers = filterByRole(filteredUsers);
-  if (filters.byGender !== "")  filteredUsers = filterByGender(filteredUsers);
+  // Luego filtramos
+  const filteredUsers = useMemo(() => {
+    let results = sortedUsers;
+    if (filters.byText !== "") results = filterByText(results);
+    if (filters.byRole !== "") results = filterByRole(results);
+    if (filters.byGender !== "")  results = filterByGender(results);
+    return results;
+  }, [sortedUsers, filters]);
 
-  const onPaginationChange = (newPage) => {
+  // Y finalmente generamos la paginación a mostrar en la tabla
+  // no es necesario agregar users en todos la memorización por cascada se recalcula
+  const paginatedUsers = useMemo(() => {
+    const start = paginationInfo.offset;
+    const end = paginationInfo.pageSize * paginationInfo.currentPage;
+    return filteredUsers.slice(start, end);
+  }, [filteredUsers, paginationInfo]);
+
+  const onPaginationChange = useCallback((newPage) => {
     const newOffset = (newPage - 1) * paginationInfo.pageSize;
-    setPaginationInfo({...paginationInfo, currentPage: newPage, offset: newOffset});
+    setPaginationInfo(prev => ({...prev, currentPage: newPage, offset: newOffset}));
+  }, [paginationInfo.pageSize]);
+
+  const changePageSizeChange = (newPageSize) => {
+    setPaginationInfo({...paginationInfo, pageSize: newPageSize, currentPage: 1, offset: 0});
   };
 
-  const paginatedUsers = filteredUsers.slice(paginationInfo.offset, paginationInfo.pageSize * paginationInfo.currentPage);
+  useEffect(() => {
+    setPaginationInfo(prev => ({...prev, currentPage: 1, offset: 0}));
+  }, [filteredUsers.length]);
 
   return (
     <>
@@ -54,8 +72,6 @@ export function App() {
       </header>
 
       <main className="p-5 min-h-dvh">
-
-
         <h1 className="text-2xl font-bold text-center mb-5">Admin Users</h1>
 
         <div className="mb-5">
@@ -71,6 +87,7 @@ export function App() {
             />
 
             <Select
+              aria-label="Filtra por rol"
               className="md:flex-1"
               startContent={<AcademicCapIcon className="size-6"/>}
               placeholder="Filtra por rol"
@@ -87,6 +104,7 @@ export function App() {
             </Select>
 
             <Select
+              aria-label="Filtra por género"
               className="md:flex-1"
               startContent={<UserIcon className="size-6"/>}
               placeholder="Filtra por género"
@@ -112,6 +130,7 @@ export function App() {
           isLoadingInfo={loading}
           onSortChange={onSortChange}
           sortDescriptor={sortDescriptor}
+          deleteUserFunc={deleteUser}
         />
 
         <div className="flex flex-col items-center md:items-start gap-1 mt-3">
@@ -121,7 +140,7 @@ export function App() {
               className="font-semibold"
               size="sm"
               color={paginationInfo.pageSize === 10 ? "primary" : "default"}
-              onPress={() => setPaginationInfo({...paginationInfo, pageSize: 10})}
+              onPress={() => changePageSizeChange(10)}
             >
               10
             </Button>
@@ -129,7 +148,7 @@ export function App() {
               className="font-semibold"
               size="sm"
               color={paginationInfo.pageSize === 20 ? "primary" : "default"}
-              onPress={() => setPaginationInfo({...paginationInfo, pageSize: 20})}
+              onPress={() => changePageSizeChange(20)}
             >
               20
             </Button>
@@ -137,7 +156,7 @@ export function App() {
               className="font-semibold"
               size="sm"
               color={paginationInfo.pageSize === 50 ? "primary" : "default"}
-              onPress={() => setPaginationInfo({...paginationInfo, pageSize: 50})}
+              onPress={() => changePageSizeChange(50)}
             >
               50
             </Button>
@@ -149,7 +168,7 @@ export function App() {
           showControls
           loop
           variant="bordered"
-          total={filteredUsers.length / paginationInfo.pageSize}
+          total={Math.ceil(filteredUsers.length / paginationInfo.pageSize)}
           page={paginationInfo.currentPage}
           color="primary"
           className=" w-fit mx-auto mt-5"

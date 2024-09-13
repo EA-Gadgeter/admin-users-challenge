@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-import { SESSION_STORAGE_KEYS } from "../../const";
+import { STORAGE_KEYS } from "../../const";
 
 export const useUserSorting = () => {
   const [sortDescriptor, setSortDescriptor] = useState({
@@ -9,7 +9,7 @@ export const useUserSorting = () => {
   });
 
   useEffect(() => {
-    const userSorting = sessionStorage.getItem(SESSION_STORAGE_KEYS.USERS_SORTING);
+    const userSorting = sessionStorage.getItem(STORAGE_KEYS.USERS_SORTING);
 
     if (!userSorting) return;
 
@@ -18,7 +18,7 @@ export const useUserSorting = () => {
 
   const onSortChange = (newSortDescriptor) => {
     setSortDescriptor(newSortDescriptor);
-    sessionStorage.setItem(SESSION_STORAGE_KEYS.USERS_SORTING, JSON.stringify(newSortDescriptor));
+    sessionStorage.setItem(STORAGE_KEYS.USERS_SORTING, JSON.stringify(newSortDescriptor));
   };
 
   const sort = (usersToSort) => {
