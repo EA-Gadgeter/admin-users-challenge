@@ -4,6 +4,7 @@ import { Pagination } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/react";
+import {  Modal,   ModalContent,   ModalHeader,   ModalBody,  ModalFooter} from "@nextui-org/modal";
 
 import { MagnifyingGlassIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
 
@@ -125,6 +126,9 @@ export function App() {
           </fieldset>
         </div>
 
+        <div>
+
+        </div>
         <UsersTable
           users={paginatedUsers}
           isLoadingInfo={loading}
@@ -162,7 +166,6 @@ export function App() {
             </Button>
           </ButtonGroup>
         </div>
-
 
         <Pagination
           showControls

@@ -37,7 +37,7 @@ export const UsersTable = ({ users, sortDescriptor, onSortChange, isLoadingInfo,
         <TableColumn key={TABLE_KEYS.LAST_NAME} allowsSorting>Apellido</TableColumn>
         <TableColumn key={TABLE_KEYS.EMAIL} allowsSorting>Email</TableColumn>
         <TableColumn>Género</TableColumn>
-        <TableColumn>Role</TableColumn>
+        <TableColumn>Rol</TableColumn>
         <TableColumn>{""}</TableColumn>
       </TableHeader>
       <TableBody
