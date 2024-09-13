@@ -13,7 +13,6 @@ export const DarkModeSwitch = () => {
   return (
     <Switch
       isSelected={darkMode}
-      size="lg"
       color="default"
       onChange={() => toggleDarkMode(!darkMode)}
       thumbIcon={({isSelected, className}) =>
@@ -24,7 +23,7 @@ export const DarkModeSwitch = () => {
         )
       }
     >
-      <span className="font-semibold text-base">
+      <span className="font-semibold text-sm">
         {darkMode ?  "Turn off" : "Turn on"} Dark mode
       </span>
     </Switch>

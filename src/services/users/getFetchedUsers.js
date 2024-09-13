@@ -23,6 +23,8 @@ export const getFetchedUsers = async (limit) => {
       email: user.email,
       gender: user.gender,
       profileImage: user.picture.thumbnail,
+      address: `${user.location.street.name} ${user.location.street.number}, ${user.location.city}`,
+      phoneNumber: user.phone
     };
   });
 };

@@ -9,11 +9,11 @@ export const useDarkModeStore = create(persist(
     toggleDarkMode: (newValue) => set(() => {
       if (!newValue) {
         document.querySelector("body").classList.remove("dark");
-        return {darkMode: newValue};
+        return { darkMode: newValue };
       }
 
       document.querySelector("body").classList.add("dark");
-      return {darkMode: newValue};
+      return { darkMode: newValue };
     }),
   }),
 

@@ -11,6 +11,24 @@ export const useGetUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const mergeUser = (userData) => {
+    setUsers(prevUsers => {
+      const newUsers = [...prevUsers];
+
+      if (!userData.id) {
+        userData.id = crypto.randomUUID();
+        newUsers.push(userData);
+
+      } else {
+        const userIndex = newUsers.findIndex(user => user.id === userData.id);
+        newUsers[userIndex] = {...userData};
+      }
+
+      sessionStorage.setItem(STORAGE_KEYS.USERS_LIST, JSON.stringify(newUsers));
+      return newUsers;
+    });
+  };
+
   const deleteUser = useCallback((userId) => {
     setUsers(prevUsers => {
       const userIndex = prevUsers.findIndex(user => user.id === userId);
@@ -19,7 +37,7 @@ export const useGetUsers = () => {
       sessionStorage.setItem(STORAGE_KEYS.USERS_LIST, JSON.stringify(updatedUsers));
       return updatedUsers;
     });
-  }, [users]);
+  }, [users])
 
   useEffect(() => {
     // Verificamos si hay usuarios en storage
@@ -43,5 +61,5 @@ export const useGetUsers = () => {
     setLoading(false);
   }, []);
 
-  return { users, loading, error, deleteUser };
+  return { users, loading, error, deleteUser, mergeUser };
 };

@@ -24,6 +24,18 @@ export const AuthContextProvider = ({ children }) => {
     setIsAuth(true);
   };
 
+  const logout = () => {
+    const newAuthInfo = {
+      ...authInfo,
+      role: ""
+    };
+
+    sessionStorage.removeItem(STORAGE_KEYS.USER);
+
+    setAuthInfo(newAuthInfo);
+    setIsAuth(false);
+  };
+
   useEffect(() => {
     const userInfo = sessionStorage.getItem(STORAGE_KEYS.USER);
 
@@ -40,7 +52,8 @@ export const AuthContextProvider = ({ children }) => {
       value={{
         authInfo,
         isAuth,
-        login
+        login,
+        logout
       }}
     >
       {children}

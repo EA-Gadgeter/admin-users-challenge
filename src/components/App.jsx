@@ -1,29 +1,31 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useContext } from "react";
 
 import { Pagination } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/react";
-import {  Modal,   ModalContent,   ModalHeader,   ModalBody,  ModalFooter} from "@nextui-org/modal";
 
-import { MagnifyingGlassIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
+import { MagnifyingGlassIcon, AcademicCapIcon, ArrowLeftEndOnRectangleIcon, UserIcon } from '@heroicons/react/24/solid';
 
-import { UsersTable } from "./users";
+import { AuthContext } from "../context/authContext";
+
+import { CreateUserFormModal, UsersTable } from "./users";
 import { DarkModeSwitch } from "./DarkModeSwitch";
 
 import { useGetUsers, useUserFilters, useUserSorting } from "../hooks/users";
 
 import { ROLES, GENDERS } from "../const";
-import { UserIcon } from "@heroicons/react/24/solid/index.js";
 
 export function App() {
-  const { users, error, loading, deleteUser } = useGetUsers();
+  const { users, error, loading, deleteUser, mergeUser } = useGetUsers();
   const { filters,
     onFilterByText, filterByText,
     onFilterByRole, filterByRole,
     onFilterByGender, filterByGender
   } = useUserFilters();
   const { sort, onSortChange, sortDescriptor } = useUserSorting();
+
+  const { logout } = useContext(AuthContext);
 
   const [paginationInfo, setPaginationInfo] = useState({
     currentPage: 1,
@@ -68,14 +70,26 @@ export function App() {
 
   return (
     <>
-      <header className="w-full flex justify-end p-5">
+      <header className="w-full flex justify-between items-center p-5">
+        <div>
+          <Button
+            variant="bordered"
+            color="danger"
+            size="sm"
+            startContent={<ArrowLeftEndOnRectangleIcon className="size-5" />}
+            onPress={logout}
+          >
+            Cerrar Sesión
+          </Button>
+        </div>
+
         <DarkModeSwitch />
       </header>
 
       <main className="p-5 min-h-dvh">
         <h1 className="text-2xl font-bold text-center mb-5">Admin Users</h1>
 
-        <div className="mb-5">
+        <div className="mb-10">
           <p className="font-semibold mb-2">Filtros</p>
 
           <fieldset className="flex flex-col gap-2 md:flex-row">
@@ -126,15 +140,19 @@ export function App() {
           </fieldset>
         </div>
 
-        <div>
-
+        <div className="w-full md:flex md:justify-end mb-3">
+          <CreateUserFormModal
+            onSaveUser={mergeUser}
+          />
         </div>
+
         <UsersTable
           users={paginatedUsers}
           isLoadingInfo={loading}
           onSortChange={onSortChange}
           sortDescriptor={sortDescriptor}
           deleteUserFunc={deleteUser}
+          onEditUser={mergeUser}
         />
 
         <div className="flex flex-col items-center md:items-start gap-1 mt-3">
